@@ -15,8 +15,9 @@ class Node {
     }
 
     removeChild(node) {
-        if (this.left === node) { this.left = null; } else if (this.right ===
-            node) { this.right = null; } else throw new Error('the node is not in my childrens list');
+        if (this.left === node) this.left = null;
+        else if (this.right === node) this.right = null;
+        else throw new Error('the node is not in my childrens list');
         node.parent = null;
     }
 
@@ -39,11 +40,8 @@ class Node {
         const my_right = this.right;
         const my_left = this.left;
 
-        this.parent.parent = this;
-        this.parent = parent_parent;
-
-        if (top_at_left) this.parent.left = this;
-        if (top_at_right) this.parent.right = this;
+        if (top_at_left) parent_parent.left = this;
+        if (top_at_right) parent_parent.right = this;
 
         if (i_am_right) {
             this.right = old_parent;
@@ -55,8 +53,13 @@ class Node {
             if (this.right) this.right.parent = this;
         }
 
-		old_parent.right = my_right;
-		old_parent.left = my_left;
+        if (my_left) my_left.parent = old_parent;
+        if (my_right) my_right.parent = old_parent;
+
+        old_parent.parent = this;
+        old_parent.left = my_left;
+        old_parent.right = my_right;
+        this.parent = parent_parent;
 
     }
 }
