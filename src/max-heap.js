@@ -5,7 +5,6 @@ class MaxHeap {
         this.root = null;
         this.parentNodes = [];
         this.length = 0;
-        this.lastInsertedNode = null;
     }
 
     push(data, priority) {
@@ -17,18 +16,26 @@ class MaxHeap {
 
     pop() {
         if (this.isEmpty()) return;
-        const lastNode = this.parentNodes.pop();
-        lastNode.remove();
         this.length--;
+        const oldRoot = this.detachRoot();
+        this.restoreRootFromLastInsertedNode(oldRoot);
+        this.shiftNodeDown(this.root);
+        return oldRoot.data;
     }
 
     detachRoot() {
+        const oldRoot = this.root;
+        if (this.parentNodes.indexOf(oldRoot) > -1) this.parentNodes.shift();
+        this.root = null;
+        return oldRoot;
 
     }
 
     restoreRootFromLastInsertedNode(detached) {
         if (this.isEmpty()) return;
-
+        const newRoot = this.parentNodes.pop();
+        this.root = newRoot;
+        return newRoot;
     }
 
     size() {
@@ -51,32 +58,28 @@ class MaxHeap {
         else this.parentNodes[0].appendChild(node);
         if (this.parentNodes[0].left && this.parentNodes[0].right)
             this.parentNodes.shift();
-
     }
 
     shiftNodeUp(node) {
         if (!node.parent || node === this.root) return;
-        node.swapWithParent();
-        //if (node.left && node.right && this.parentNodes.includes(node))
-        //    this.parentNodes.splice(this.parentNodes.indexOf(node), 1);
-        if (!node.parent) {
-            this.root = node;
-            //if (this.parentNodes.length) {
-			//	const lastNode = this.parentNodes.pop();
-			//	this.parentNodes = [];
-			//}
-
+        if (node.parent.priority < node.priority) {
+            this.swapParentNodes(node, node.parent);
+            node.swapWithParent();
+            if (!node.parent) this.root = node;
+            this.shiftNodeUp(node);
         }
-        else return shiftNodeUp(node);
     }
 
     shiftNodeDown(node) {
 
     }
 
-    restoreParentNodes() {
-
-	}
+    swapParentNodes(bottomNode, topNode) {
+        const nodeIndex = this.parentNodes.indexOf(bottomNode);
+        const parentIndex = this.parentNodes.indexOf(topNode);
+        if (nodeIndex > -1) this.parentNodes[nodeIndex] = topNode;
+        if (parentIndex > -1) this.parentNodes[parentIndex] = bottomNode;
+    }
 }
 
 module.exports = MaxHeap;

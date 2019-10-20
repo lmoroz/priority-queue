@@ -13,16 +13,15 @@ class PriorityQueue {
 
 	shift() {
 		if(this.isEmpty()) throw new Error('Queue is empty');
-		const node = this.heap.pop();
-		return node;
+		return this.heap.pop();
 	}
 
 	size() {
-
+		return this.heap.size();
 	}
 
 	isEmpty() {
-		return !this.size();
+		return this.heap.isEmpty();
 	}
 }
 
